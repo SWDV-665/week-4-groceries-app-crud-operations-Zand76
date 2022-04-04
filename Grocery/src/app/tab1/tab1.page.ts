@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { AlertController } from '@ionic/angular';
 import { GroceriesServiceService } from '../groceries-service.service';
+import { InputDialogServiceService } from '../input-dialog-service.service';
 
 
 @Component({
@@ -18,6 +19,7 @@ export class Tab1Page {
     public toastCtrl: ToastController, 
     public alertCtrl: AlertController,
     public dataService: GroceriesServiceService,
+    public inputDialogService: InputDialogServiceService,
     ) {}
 
   loadItems() {
@@ -31,7 +33,6 @@ export class Tab1Page {
       duration: 3000
     });
     await toast.present();
-
     this.dataService.removeItem(index);
   }
 
@@ -42,87 +43,13 @@ export class Tab1Page {
       duration: 3000
     });
     await toast.present();
-    this.showEditItemPrompt(item, index);
+    this.inputDialogService.showPrompt(item, index);
   }
 
   addItem() {
     console.log("Adding Item");
-    this.showAddItemPrompt();
+    this.inputDialogService.showPrompt();
   }
 
-  async showAddItemPrompt() {
-    const alert = await this.alertCtrl.create({
-      cssClass: 'my-custom-class',
-      header: 'Add Item',
-      message: "Please enter item",
-      inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          placeholder: 'Name'
-        },        
-        {
-          name: 'quantity',
-          type: 'number',
-          placeholder: 'Quantity'
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (item) => {
-            console.log('Cancel clicked');
-          }
-        }, {
-          text: 'Save',
-          handler: (item) => {
-            console.log('Save clicked', item);
-            this.dataService.addItem(item);
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
-
-  async showEditItemPrompt(item, index) {
-    const alert = await this.alertCtrl.create({
-      cssClass: 'my-custom-class',
-      header: 'Edit Item',
-      message: "Please edit item",
-      inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          placeholder: 'Name',
-          value: item.name
-        },        
-        {
-          name: 'quantity',
-          type: 'number',
-          placeholder: 'Quantity',
-          value: item.quantity
-        },
-      ],
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: (item) => {
-            console.log('Cancel clicked');
-          }
-        }, {
-          text: 'Save',
-          handler: (item) => {
-            console.log('Save clicked', item);
-            this.dataService.editItem(item, index);
-          }
-        }
-      ]
-    });
-    await alert.present();
-  }
+  
 }
